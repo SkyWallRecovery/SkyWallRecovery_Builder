@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       MANIFEST_BRANCH:
-        description: 'Skywall Manifest Branch'
+        description: 'SkyWall Manifest Branch'
         required: true
         default: ''
         type: choice
@@ -17,7 +17,7 @@ on:
       DEVICE_TREE_BRANCH:
         description: 'Custom Recovery Tree Branch' # Your Device Tree Branch, make sure it's right.
         required: true
-        default: 'SkyWall-12.1_Tree'
+        default: ''
       DEVICE_PATH:
         description: 'Specify your Device Path' # As is, just like your DEVICE_PATH in your BoardConfig.mk
         required: true
@@ -38,7 +38,7 @@ on:
 
 jobs:
   build:
-    name: Build SkyWall by ${{ github.actor }}
+    name: Build SkyWall Recovery By ${{ github.actor }}
     runs-on: ubuntu-20.04
     if: github.event.repository.owner.id == github.event.sender.id
     env:
@@ -108,7 +108,7 @@ jobs:
     - name: Repo Sync
       run: |
         cd android-recovery
-        repo sync -j$(nproc --all) --force-sync
+        repo sync
       
     - name: Clone Device Tree
       run: |
