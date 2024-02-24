@@ -1,33 +1,31 @@
-name: Recovery Builder - TWRP
+name: SkyWall Recovery Builder
 
 on:
   workflow_dispatch:
     inputs:
       MANIFEST_BRANCH:
-        description: 'TWRP Minimal-Manifest Branch'
+        description: 'Skywall Manifest Branch'
         required: true
         default: ''
         type: choice
         options:
-        - twrp-12.1
-        - twrp-11
-        - twrp-9.0
+        - skywall-12.1
       DEVICE_TREE:
         description: 'Custom Recovery Tree' # Your already made Device Tree for TWRP
         required: true
-        default: 'https://github.com/cd-Crypton/custom_recovery_tree_realme_macedonia'
+        default: ''
       DEVICE_TREE_BRANCH:
         description: 'Custom Recovery Tree Branch' # Your Device Tree Branch, make sure it's right.
         required: true
-        default: 'twrp-12.1'
+        default: 'SkyWall-12.1_Tree'
       DEVICE_PATH:
         description: 'Specify your Device Path' # As is, just like your DEVICE_PATH in your BoardConfig.mk
         required: true
-        default: 'device/realme/macedonia'
+        default: 'device/realme/RMX3063'
       DEVICE_NAME:
         description: 'Specify your Device Codename' # As is, just like your PRODUCT_DEVICE in your device tree.
         required: true
-        default: 'macedonia'
+        default: 'RMX3063'
       BUILD_TARGET:
         description: 'Specify your Build Target' # Pick among boot, recovery and vendor_boot
         required: true
@@ -37,14 +35,10 @@ on:
         - boot
         - recovery
         - vendorboot
-      LDCHECK:
-        description: 'Path of blobs to check' # Use it know what kind of dependencies your missing for decryption blobs.
-        required: true
-        default: 'system/bin/qseecomd'
 
 jobs:
   build:
-    name: Build TWRP by ${{ github.actor }}
+    name: Build SkyWall by ${{ github.actor }}
     runs-on: ubuntu-20.04
     if: github.event.repository.owner.id == github.event.sender.id
     env:
@@ -98,16 +92,16 @@ jobs:
       uses: haya14busa/action-cond@v1
       id: manifest
       with:
-        cond: ${{ github.event.inputs.MANIFEST_BRANCH == 'twrp-11' || github.event.inputs.MANIFEST_BRANCH == 'twrp-12.1' }}
-        if_true: https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git
+        cond: ${{ github.event.inputs.MANIFEST_BRANCH == 'skywall-12.1' }}
+        if_true: https://github.com/SkyWallRecovery/SkyWall_Manifest.git
         if_false: https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni.git
 
     - name: Initialize Repo
       run: |
         mkdir android-recovery
         cd android-recovery
-        git config --global user.name "Carlo Dandan"
-        git config --global user.email "jasminecarlo01@gmail.com"
+        git config --global user.name "SkyWall Recovery"
+        git config --global user.email "SkyWall@Recovery"
         repo init --depth=1 -u ${{ steps.manifest.outputs.value }} -b ${{ github.event.inputs.MANIFEST_BRANCH }}
         sed -i '/<remove-project name="platform\/external\/gflags"  \/>/d' .repo/manifests/remove-minimal.xml
         
