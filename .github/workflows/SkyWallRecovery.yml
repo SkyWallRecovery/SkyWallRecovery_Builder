@@ -115,7 +115,6 @@ jobs:
 
     - name: Sync Device Dependencies
       run: |
-        bash ${GITHUB_WORKSPACE}/scripts/convert.sh ${{ github.event.inputs.DEVICE_PATH }}/${{ steps.buildtree.outputs.value }}.dependencies
         repo sync -j$(nproc --all)
       working-directory: ${{ steps.pwd.outputs.skywall-folder }}
       continue-on-error: true
@@ -127,6 +126,7 @@ jobs:
 
     - name: Building recovery
       run: |
+        cd skywall
         source build/envsetup.sh
         export ALLOW_MISSING_DEPENDENCIES=true
         lunch ${{ github.event.inputs.MAKEFILE_NAME }}-eng && make clean && make ${{ github.event.inputs.BUILD_TARGET }}image -j$(nproc --all)
